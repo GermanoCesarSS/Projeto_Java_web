@@ -1,50 +1,47 @@
 package dao;
 
+import dao.DAOGenerica;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.Brinquedo;
 import model.Marca;
 import utils.Conexao;
 
-public class BrinquedoDAO implements DAOGenerica{
+public class MarcaDAO implements DAOGenerica{
     
     private Connection conexao;
-    public BrinquedoDAO() throws SQLException, ClassNotFoundException{
+    public MarcaDAO() throws SQLException, ClassNotFoundException{
         this.conexao = new Conexao().abrirConexao(); 
    }
 
     @Override
     public void gravar(Object objeto) throws SQLException {
         
-        Brinquedo brinquedo = (Brinquedo) objeto;
+        Marca marca = (Marca) objeto;
         
-        if(brinquedo.getCodigoBrinquedo() == 0){
-            this.inserir(brinquedo);
+        if(marca.getCodigoMarca() == 0){
+            this.inserir(marca);
         }else{
-            this.alterar(brinquedo);
+            this.alterar(marca);
         }
     }
 
     @Override
     public void inserir(Object objeto) throws SQLException {
-        Brinquedo brinquedo = (Brinquedo) objeto;
-        String sql = "insert into brinquedo values (default, ?, ?)";
+        Marca marca = (Marca) objeto;
+        String sql = "insert into marca values (default, ?)";
         PreparedStatement stmt = null;
         
         try {
             stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, brinquedo.getNomeBrinquedo());
-            stmt.setInt(2, brinquedo.getMarca().getCodigoMarca());
+            stmt.setString(1, marca.getNomeMarca());
             stmt.execute();
         }
         catch (SQLException ex) {
-            throw new SQLException("Erro ao inserir brinquedo");
+            throw new SQLException("Erro ao inserir marca");
         }
         finally{
             new Conexao().encerrarConexao(conexao, stmt);
@@ -53,18 +50,18 @@ public class BrinquedoDAO implements DAOGenerica{
 
     @Override
     public void alterar(Object objeto) throws SQLException {
-        Brinquedo brinquedo = (Brinquedo) objeto;
-        String sql = "update brinquedo set nomebrinquedo = ?, codigomarca = ?"
-                + " where codigobrinquedo = ?";
+        Marca marca = (Marca) objeto;
+        String sql = "update marca set nomemarca = ?"
+                + " where codigomarca = ?";
+        
         PreparedStatement stmt = null;
         try {
             stmt = conexao.prepareStatement(sql);
-            stmt.setString(1, brinquedo.getNomeBrinquedo());
-            stmt.setInt(2, brinquedo.getMarca().getCodigoMarca());
-            stmt.setInt(3, brinquedo.getCodigoBrinquedo());
+            stmt.setString(1, marca.getNomeMarca());
+            stmt.setInt(2, marca.getCodigoMarca());
             stmt.execute();
         } catch (SQLException ex) {
-            throw new SQLException("Erro ao alterar brinquedo");
+            throw new SQLException("Erro ao alterar marca");
         }finally{
             new Conexao().encerrarConexao(conexao, stmt);
         }
@@ -72,31 +69,27 @@ public class BrinquedoDAO implements DAOGenerica{
 
     @Override
     public Object consultar(int codigo) throws SQLException {
-        String sql = "select * from brinquedo b inner join marca m "
-                + "on b.codigomarca = m.codigomarca where codigobrinquedo = ?";
+       
+        String sql = "select * from marca where codigomarca = ?";
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Brinquedo brinquedo = null;
+        Marca marca = null;
         try {
             stmt = conexao.prepareStatement(sql);
             stmt.setInt(1, codigo);
             rs = stmt.executeQuery();
             while(rs.next()){
-                brinquedo = new Brinquedo(
-                        rs.getInt("codigobrinquedo"),
-                        rs.getString("nomebrinquedo"),
-                        (Marca) new MarcaDAO().consultar(rs.getInt("codigomarca"))
-                );
+                marca = new Marca(
+                        rs.getInt("codigomarca"),
+                        rs.getString("nomemarca"));
             }
         } catch (SQLException ex) {
-            throw new SQLException("Erro ao consultar brinquedo");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(BrinquedoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SQLException("Erro ao consultar marca");
         }finally{
             new Conexao().encerrarConexao(conexao, stmt, rs);
         }
         
-        return brinquedo;
+        return marca;
         
     }
 
@@ -104,7 +97,7 @@ public class BrinquedoDAO implements DAOGenerica{
     public List<Object> listar() throws SQLException {
         
         
-        String sql = "select * from brinquedo";
+        String sql = "select * from marca";
         PreparedStatement stmt = null;
         ResultSet rs = null;
         List<Object> lista = new ArrayList<>();
@@ -112,16 +105,13 @@ public class BrinquedoDAO implements DAOGenerica{
             stmt = conexao.prepareStatement(sql);
             rs = stmt.executeQuery();
             while(rs.next()){
-                Brinquedo brinquedo = new Brinquedo(
-                        rs.getInt("codigobrinquedo"),
-                        rs.getString("nomebrinquedo"),
-                        (Marca) new MarcaDAO().consultar(rs.getInt("codigomarca")));
-                lista.add(brinquedo);
+                Marca marca = new Marca(
+                        rs.getInt("codigomarca"),
+                        rs.getString("nomemarca"));
+                lista.add(marca);
             }
         } catch (SQLException ex) {
-            throw new SQLException("Erro ao listar brinquedo");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(BrinquedoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SQLException("Erro ao listar marca");
         }finally{
             new Conexao().encerrarConexao(conexao, stmt, rs);
         }
@@ -132,8 +122,8 @@ public class BrinquedoDAO implements DAOGenerica{
     @Override
     public void excluir(int codigo) throws SQLException {
         
-        String sql = "delete from brinquedo"
-                + " where codigobrinquedo = ?";
+        String sql = "delete from marca"
+                + " where codigomarca = ?";
         PreparedStatement stmt = null;
         
         try{
@@ -141,7 +131,7 @@ public class BrinquedoDAO implements DAOGenerica{
             stmt.setInt(1, codigo);
             stmt.execute();
         }catch (SQLException ex) {
-            throw new SQLException("Erro ao excluir brinquedo");
+            throw new SQLException("Erro ao excluir marca");
         }finally{
             new Conexao().encerrarConexao(conexao, stmt);
         }

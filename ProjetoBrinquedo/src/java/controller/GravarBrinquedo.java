@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Brinquedo;
+import model.Marca;
 
 @WebServlet(name = "GravarBrinquedo", urlPatterns = {"/GravarBrinquedo"})
 public class GravarBrinquedo extends HttpServlet {
@@ -23,11 +24,18 @@ public class GravarBrinquedo extends HttpServlet {
             
             String nomeBrinquedo = request.getParameter("nomeBrinquedo");
             
-            Brinquedo Brinquedo = new Brinquedo(codigoBrinquedo, nomeBrinquedo);
+            int codigoMarca = Integer.parseInt(request.getParameter("codigoMarca"));
+            Marca marca = new Marca();
+            marca.setCodigoMarca(codigoMarca);
+            
+            Brinquedo Brinquedo = new Brinquedo(codigoBrinquedo, nomeBrinquedo, marca);
+            
             BrinquedoDAO BrinquedoDAO = new BrinquedoDAO();
             BrinquedoDAO.gravar(Brinquedo);
-            request.setAttribute("mensagem", "Brinquedo gravado com sucesso");
-        }catch(SQLException | ClassNotFoundException ex){
+            
+            request.setAttribute("mensagem", "Brinquedo gravado com sucesso");    
+        }
+        catch(SQLException | ClassNotFoundException ex){
             request.setAttribute("mensagem", ex.getMessage());
         }
         request.getRequestDispatcher("ListarBrinquedo")

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class Conexao {
 
-    public Connection abrirConexao()throws SQLException, ClassNotFoundException{
+    public static Connection abrirConexao()throws SQLException, ClassNotFoundException{
         try {
             Class.forName("org.postgresql.Driver");
                                                                            //Lembrar de mudar o BANCO DE DADOS
@@ -21,7 +21,7 @@ public class Conexao {
                 }
     }
     
-    private void encerrar(Connection conexao, PreparedStatement stmt, ResultSet rs) throws SQLException{
+    private static void encerrar(Connection conexao, PreparedStatement stmt, ResultSet rs) throws SQLException{
         try{
         if(conexao != null){
             conexao.close();
@@ -36,11 +36,11 @@ public class Conexao {
                 throw new SQLException("Erro ao encerrar conexão com o banco de dados");
             }
     }
-    public void encerrarConexao(Connection conexao, PreparedStatement stmt) throws SQLException{
+    public static void encerrarConexao(Connection conexao, PreparedStatement stmt) throws SQLException{
         encerrar(conexao, stmt, null);
     }
     
-    public void encerrarConexao(Connection conexao, PreparedStatement stmt, ResultSet rs)
+    public static void encerrarConexao(Connection conexao, PreparedStatement stmt, ResultSet rs)
         throws SQLException{
         encerrar(conexao,stmt, rs);
     }

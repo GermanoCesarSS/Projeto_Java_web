@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12">
                 <a href="NovoBrinquedo" class="btn btn-primary">Novo Brinquedo</a>
-                <a href="${pageContext.request.contextPath}/" class="btn btn-secondary">Voltar</a>
+                <a href="${pageContext.request.contextPath}/home.jsp" class="btn btn-secondary">Voltar</a>
             </div>
         </div>
         <hr/>
@@ -32,6 +32,7 @@
                     <tr>
                         <td>${Brinquedo.codigoBrinquedo}</td>
                         <td>${Brinquedo.nomeBrinquedo}</td>
+                        <td>${Brinquedo.marca.nomeMarca}</td>
                         <td><a class="btn btn-info" href="ConsultarBrinquedo?codigoBrinquedo=${Brinquedo.codigoBrinquedo}">Alterar</a>
                         <a class="btn btn-danger" href="ExcluirBrinquedo?codigoBrinquedo=${Brinquedo.codigoBrinquedo}">Excluir</a></td>
                     </tr>

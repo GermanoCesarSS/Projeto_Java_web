@@ -1,8 +1,9 @@
 
 package controller;
 
+import dao.MarcaDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,12 +15,17 @@ import model.Brinquedo;
 public class NovoBrinquedo extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException{
         response.setContentType("text/html;charset=UTF-8");
         
-        request.setAttribute("Brinquedo", new Brinquedo());
-        request.getRequestDispatcher("gravarBrinquedo.jsp")
-                .forward(request, response);
+         try {
+            request.setAttribute("Brinquedo", new Brinquedo());
+            request.setAttribute("marcas", new MarcaDAO().listar());
+        } catch (SQLException | ClassNotFoundException ex) {
+            request.setAttribute("mensagem", ex.getMessage());
+        }
+        request.getRequestDispatcher("gravarBrinquedo.jsp").forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -1,9 +1,15 @@
 package model;
 public class Brinquedo {
+    public Brinquedo() {
+    }
+    private int codigoBrinquedo;
+    private String nomeBrinquedo;
+    private Marca marca;
 
-    public Brinquedo(int codigoBrinquedo, String nomeBrinquedo) {
+    public Brinquedo(int codigoBrinquedo, String nomeBrinquedo, Marca marca) {
         this.codigoBrinquedo = codigoBrinquedo;
         this.nomeBrinquedo = nomeBrinquedo;
+        this.marca = marca;
     }
 
     public int getCodigoBrinquedo() {
@@ -22,8 +28,11 @@ public class Brinquedo {
         this.nomeBrinquedo = nomeBrinquedo;
     }
 
-    public Brinquedo() {
+    public Marca getMarca() {
+        return marca;
     }
-    private int codigoBrinquedo;
-    private String nomeBrinquedo;
+
+    public void setMarca(Marca marca) {
+        this.marca = marca;
+    }
 }

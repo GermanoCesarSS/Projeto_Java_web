@@ -1,8 +1,6 @@
 
 package controller;
 
-import dao.BrinquedoDAO;
-import dao.MarcaDAO;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -10,37 +8,29 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Brinquedo;
+import model.Marca;
+import dao.MarcaDAO;
 
 /**
  *
  * @author manoa
  */
-@WebServlet(name = "ConsultarBrinquedo", urlPatterns = {"/ConsultarBrinquedo"})
-public class ConsultarBrinquedo extends HttpServlet {
+@WebServlet(name = "ConsultarMarca", urlPatterns = {"/ConsultarMarca"})
+public class ConsultarMarca extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         
         response.setContentType("text/html;charset=UTF-8");
         try{
-            int codigoBrinquedo = Integer.parseInt(request.getParameter("codigoBrinquedo"));
-            BrinquedoDAO brinquedoDAO = new BrinquedoDAO();
-           request.setAttribute("brinquedo", brinquedoDAO.consultar(codigoBrinquedo));
-           request.setAttribute("marcas", new MarcaDAO().listar());
+            int codigoMarca = Integer.parseInt(request.getParameter("codigoMarca"));
+            MarcaDAO marcaDAO = new MarcaDAO();
+            Marca Marca = (Marca) marcaDAO.consultar(codigoMarca);
+            request.setAttribute("marca", Marca);
         }catch(SQLException | ClassNotFoundException ex){
             request.setAttribute("mensagem", ex.getMessage());
         }
-        request.getRequestDispatcher("gravarBrinquedo.jsp")
+        request.getRequestDispatcher("gravarMarca.jsp")
                 .forward(request, response);
     }
 
